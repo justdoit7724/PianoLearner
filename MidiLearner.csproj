@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CannedBytes.Midi" Version="2.0.2" />
     <PackageReference Include="Melanchall.DryWetMidi" Version="7.1.0" />
   </ItemGroup>
 

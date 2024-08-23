@@ -25,7 +25,7 @@ namespace MidiLearner
         public static PianoManager Instance { get { return m_instance.Value; } }
 
 
-        public static Chord GetTad( )
+        public static Chord GetTriad( )
         {
             var nList = PianoManager.Instance.m_pressedNote;
 
@@ -273,7 +273,7 @@ namespace MidiLearner
             if (newChord != null)
                 return newChord;
 
-            return GetTriad();
+            return GetTriad ();
         }
 
         private static NoteKind GetNoteKind(int pitch)
