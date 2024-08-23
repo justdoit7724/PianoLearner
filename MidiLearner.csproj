@@ -14,10 +14,4 @@
     <PackageReference Include="Melanchall.DryWetMidi" Version="7.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="CannedBytes.Midi">
-      <HintPath>CannedBytes.Midi.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
