@@ -273,7 +273,7 @@ namespace MidiLearner
             if (newChord != null)
                 return newChord;
 
-            return GetTriad();
+            return GetTriad ();
         }
 
         private static NoteKind GetNoteKind(int pitch)
