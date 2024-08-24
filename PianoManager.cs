@@ -13,7 +13,7 @@ namespace MidiLearner
     {
         private static readonly Lazy<PianoManager> m_instance = new Lazy<PianoManager>(() => new PianoManager());
 
-        private PianoManager() {
+        private PianoManager( ) {
 
             m_inputDevice = InputDevice.GetByName("Digital Piano");
             m_inputDevice.EventReceived += OnEventReceived;
