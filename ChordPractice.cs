@@ -166,8 +166,12 @@ namespace MidiLearner
                 if (curChord == m_chords[Keys])
                 {
                     m_chords.Remove(Keys);
+                    this.Controls.Remove(Keys);
                     m_passCount++;
                     LB_PASS_COUNT.Text = Convert.ToString(m_passCount);
+
+                    PianoManager.Instance.Clear();
+                    break;
                 }
             }
         }

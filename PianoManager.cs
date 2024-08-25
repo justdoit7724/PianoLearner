@@ -38,7 +38,12 @@ namespace MidiLearner
         public static PianoManager Instance { get { return m_instance.Value; } }
 
 
-        public static Chord GetTriad( )
+        public void Clear()
+        {
+            m_pressedNote.Clear();
+        }
+
+        public Chord GetTriad( )
         {
             var nList = PianoManager.Instance.m_pressedNote;
 
@@ -59,7 +64,7 @@ namespace MidiLearner
                         continue;
 
 
-
+                    curPitch += SCALE_PITCH_NUM * 10;
                     while ((curPitch - SCALE_PITCH_NUM) >= root)
                         curPitch -= SCALE_PITCH_NUM;
 
@@ -167,6 +172,7 @@ namespace MidiLearner
                     if (root == curPitch)
                         continue;
 
+                    curPitch += SCALE_PITCH_NUM * 10;
                     while ((curPitch - SCALE_PITCH_NUM) >= root)
                         curPitch -= SCALE_PITCH_NUM;
 

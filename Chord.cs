@@ -229,7 +229,7 @@ namespace MidiLearner
             return a.m_chordKind==b.m_chordKind &&
                 a.m_note==b.m_note&&
                 a.m_is7 == b.m_is7 &&
-                a.m_isDominent7==b.m_isDominent7;
+                (!a.m_is7 || a.m_isDominent7==b.m_isDominent7);
         }
         public static bool operator !=(Chord a, Chord b)
         {
