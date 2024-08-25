@@ -280,7 +280,7 @@ namespace MidiLearner
             return null;
         }
 
-        public Chord GetChord()
+        public Chord GetChord(  )
         {
             var newChord = Get7();
             if (newChord != null)
