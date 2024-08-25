@@ -13,11 +13,24 @@ namespace MidiLearner
     {
         private static readonly Lazy<PianoManager> m_instance = new Lazy<PianoManager>(() => new PianoManager());
 
+        private InputDevice m_inputDevice=null;
+        private HashSet<int> m_pressedNote;
+
+        public const int SCALE_PITCH_NUM = 12;
+        public const NoteKind m_startingNote = NoteKind.A;
+        public const int m_startingPitch = 21;
+
+
         private PianoManager() {
 
-            m_inputDevice = InputDevice.GetByName("Digital Piano");
-            m_inputDevice.EventReceived += OnEventReceived;
-            m_inputDevice.StartEventsListening();
+            try
+            {
+                m_inputDevice = InputDevice.GetByName("Digital Piano");
+                m_inputDevice.EventReceived += OnEventReceived;
+                m_inputDevice.StartEventsListening();
+            } catch {
+
+            }
 
             m_pressedNote = new HashSet<int>();
         }
@@ -278,36 +291,12 @@ namespace MidiLearner
 
         private static NoteKind GetNoteKind(int pitch)
         {
-            return (NoteKind)(((int)PianoManager.Instance.StartingNote + pitch - PianoManager.Instance.StartingPitch) % SCALE_PITCH_NUM);
+            return (NoteKind)(((int)PianoManager.m_startingNote + pitch - PianoManager.m_startingPitch) % SCALE_PITCH_NUM);
         }
         private NoteKind GetNoteKind(NoteKind curNote, int pitch)
         {
             return (NoteKind)(((int)curNote + pitch) % SCALE_PITCH_NUM);
         }
-
-        public NoteKind StartingNote
-        {
-            get
-            {
-                return m_startingNote;
-            }
-        }
-        public int StartingPitch
-        {
-            get
-            {
-                return m_startingPitch;
-            }
-        }
-
-        private InputDevice m_inputDevice;
-
-        public const int SCALE_PITCH_NUM = 12;
-        public const NoteKind m_startingNote = NoteKind.A;
-        public const int m_startingPitch = 21;
-        private HashSet<int> m_pressedNote;
-
-
 
         private void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
         {

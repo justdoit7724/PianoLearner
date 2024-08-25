@@ -35,6 +35,9 @@
             CB_SEVEN = new CheckBox();
             PB_LIFE = new ProgressBar();
             LB_PASS_COUNT = new Label();
+            LB_CHORD_INDI = new ListBox();
+            TB_CHORD_ADD = new TextBox();
+            BT_CHORD_ADD = new Button();
             ((System.ComponentModel.ISupportInitialize)TB_CHORDSPEED).BeginInit();
             SuspendLayout();
             // 
@@ -46,12 +49,13 @@
             ChordCheck.Name = "ChordCheck";
             ChordCheck.Size = new Size(77, 92);
             ChordCheck.TabIndex = 0;
+            ChordCheck.SelectedValueChanged += ChordCheck_SelectedValueChanged;
             // 
             // Play
             // 
-            Play.Location = new Point(27, 251);
+            Play.Location = new Point(751, 367);
             Play.Name = "Play";
-            Play.Size = new Size(70, 63);
+            Play.Size = new Size(226, 196);
             Play.TabIndex = 1;
             Play.Text = "button1";
             Play.UseVisualStyleBackColor = true;
@@ -59,16 +63,16 @@
             // 
             // PlayGround
             // 
-            PlayGround.Location = new Point(157, 62);
+            PlayGround.Location = new Point(171, 62);
             PlayGround.Name = "PlayGround";
-            PlayGround.Size = new Size(613, 201);
+            PlayGround.Size = new Size(806, 269);
             PlayGround.TabIndex = 2;
             PlayGround.TabStop = false;
             // 
             // TB_CHORDSPEED
             // 
             TB_CHORDSPEED.Location = new Point(12, 178);
-            TB_CHORDSPEED.Maximum = 6;
+            TB_CHORDSPEED.Maximum = 7;
             TB_CHORDSPEED.Name = "TB_CHORDSPEED";
             TB_CHORDSPEED.Size = new Size(130, 56);
             TB_CHORDSPEED.TabIndex = 3;
@@ -83,10 +87,11 @@
             CB_SEVEN.TabIndex = 4;
             CB_SEVEN.Text = "7";
             CB_SEVEN.UseVisualStyleBackColor = true;
+            CB_SEVEN.CheckedChanged += CB_SEVEN_CheckedChanged;
             // 
             // PB_LIFE
             // 
-            PB_LIFE.Location = new Point(157, 30);
+            PB_LIFE.Location = new Point(171, 30);
             PB_LIFE.MarqueeAnimationSpeed = 50;
             PB_LIFE.Name = "PB_LIFE";
             PB_LIFE.Size = new Size(246, 29);
@@ -98,17 +103,46 @@
             // 
             LB_PASS_COUNT.AutoSize = true;
             LB_PASS_COUNT.Font = new Font("Segoe UI", 12F);
-            LB_PASS_COUNT.Location = new Point(418, 30);
+            LB_PASS_COUNT.Location = new Point(423, 31);
             LB_PASS_COUNT.Name = "LB_PASS_COUNT";
             LB_PASS_COUNT.Size = new Size(65, 28);
             LB_PASS_COUNT.TabIndex = 6;
             LB_PASS_COUNT.Text = "label1";
             // 
+            // LB_CHORD_INDI
+            // 
+            LB_CHORD_INDI.FormattingEnabled = true;
+            LB_CHORD_INDI.Location = new Point(27, 240);
+            LB_CHORD_INDI.Name = "LB_CHORD_INDI";
+            LB_CHORD_INDI.Size = new Size(115, 184);
+            LB_CHORD_INDI.TabIndex = 7;
+            // 
+            // TB_CHORD_ADD
+            // 
+            TB_CHORD_ADD.Font = new Font("Segoe UI", 12F);
+            TB_CHORD_ADD.Location = new Point(27, 448);
+            TB_CHORD_ADD.Name = "TB_CHORD_ADD";
+            TB_CHORD_ADD.Size = new Size(60, 34);
+            TB_CHORD_ADD.TabIndex = 8;
+            // 
+            // BT_CHORD_ADD
+            // 
+            BT_CHORD_ADD.Location = new Point(93, 448);
+            BT_CHORD_ADD.Name = "BT_CHORD_ADD";
+            BT_CHORD_ADD.Size = new Size(49, 34);
+            BT_CHORD_ADD.TabIndex = 9;
+            BT_CHORD_ADD.Text = "add";
+            BT_CHORD_ADD.UseVisualStyleBackColor = true;
+            BT_CHORD_ADD.Click += BT_CHORD_ADD_Click;
+            // 
             // ChordPractice
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1026, 610);
+            Controls.Add(BT_CHORD_ADD);
+            Controls.Add(TB_CHORD_ADD);
+            Controls.Add(LB_CHORD_INDI);
             Controls.Add(LB_PASS_COUNT);
             Controls.Add(PB_LIFE);
             Controls.Add(CB_SEVEN);
@@ -132,5 +166,8 @@
         private CheckBox CB_SEVEN;
         private ProgressBar PB_LIFE;
         private Label LB_PASS_COUNT;
+        private ListBox LB_CHORD_INDI;
+        private TextBox TB_CHORD_ADD;
+        private Button BT_CHORD_ADD;
     }
 }

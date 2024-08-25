@@ -19,9 +19,11 @@ namespace MidiLearner
         private readonly Point m_startingPt;
         private readonly Point m_endPt;
         private Dictionary<System.Windows.Forms.Label, Chord> m_chords;
-        private int m_speed=1;
+        private int m_speed = 1;
         private int m_passCount = 0;
+        private bool m_isPlaying = false;
 
+        private BindingList<string> m_indiChords = new BindingList<string>();
         public ChordPractice()
         {
             InitializeComponent();
@@ -30,7 +32,7 @@ namespace MidiLearner
             m_updateTimer.Interval = 20;
             m_updateTimer.Tick += new EventHandler(TimerEventProcessor);
             m_updateTimer.Start();
-            m_spawnTimer=new System.Windows.Forms.Timer();
+            m_spawnTimer = new System.Windows.Forms.Timer();
             m_spawnTimer.Interval = 1000;
             m_spawnTimer.Tick += new EventHandler(SpawnEventProcessor);
 
@@ -43,59 +45,69 @@ namespace MidiLearner
 
             m_chords = new Dictionary<System.Windows.Forms.Label, Chord>();
 
+            LB_CHORD_INDI.DataSource = m_indiChords;
+
+            TB_CHORDSPEED_Scroll(null, null);
         }
 
 
         private void CreateChord()
         {
-            if (ChordCheck.CheckedItems.Count == 0)
-                return;
-
             Random random = new Random();
-            int rInt = random.Next(0, ChordCheck.CheckedItems.Count);
-            bool is7 = CB_SEVEN.Checked && random.Next(0, 2) == 1;
-            bool isDominent7 = false;
-            ChordKind rChord = ChordKind.Major;
-
-            if (is7)
+            Chord testChord=null;
+            if (LB_CHORD_INDI.Items.Count == 0)
             {
-                rInt++;
-            }
+                int rInt = random.Next(0, ChordCheck.CheckedItems.Count);
+                bool is7 = CB_SEVEN.Checked && random.Next(0, 2) == 1;
+                bool isDominent7 = false;
+                ChordKind rChord = ChordKind.Major;
 
-            if (ChordCheck.GetItemChecked(0))//major
-            {
+                if (is7)
+                {
+                    rInt++;
+                }
+
+                if (ChordCheck.GetItemChecked(0))//major
+                {
+                    if (rInt-- == 0)
+                        rChord = ChordKind.Major;
+                }
+                if (ChordCheck.GetItemChecked(1))//minor
+                {
+                    if (rInt-- == 0)
+                        rChord = ChordKind.Minor;
+
+                }
+                if (ChordCheck.GetItemChecked(2))//aug
+                {
+
+                    if (rInt-- == 0)
+                        rChord = ChordKind.Aug;
+                }
+                else if (ChordCheck.GetItemChecked(3))//dim
+                {
+
+                    if (rInt-- == 0)
+                        rChord = ChordKind.Dim;
+                }
+
+                //dominent
                 if (rInt-- == 0)
-                    rChord = ChordKind.Major;
+                    isDominent7 = true;
+
+
+                rInt = random.Next(0, PianoManager.SCALE_PITCH_NUM);
+                NoteKind note = (NoteKind)rInt;
+
+                testChord= new Chord(note, rChord, is7, isDominent7);
             }
-            if (ChordCheck.GetItemChecked(1))//minor
+            else
             {
-                if (rInt-- == 0)
-                    rChord = ChordKind.Minor;
-
-            }
-            if (ChordCheck.GetItemChecked(2))//aug
-            {
-
-                if (rInt-- == 0)
-                    rChord = ChordKind.Aug;
-            }
-            else if (ChordCheck.GetItemChecked(3))//dim
-            {
-
-                if (rInt-- == 0)
-                    rChord = ChordKind.Dim;
+                int rInt = random.Next(0, LB_CHORD_INDI.Items.Count);
+                testChord = Chord.FromString(LB_CHORD_INDI.Items[rInt].ToString());
             }
 
-            //dominent
-            if (rInt-- == 0)
-                isDominent7 = true;
 
-
-            rInt = random.Next(0, PianoManager.SCALE_PITCH_NUM);
-            NoteKind note = (NoteKind)rInt;
-
-
-            var testChord = new Chord(note, rChord, is7, isDominent7);
             var testChordLabel = new System.Windows.Forms.Label();
             testChordLabel.Text = testChord.ToString();
             var newPt = m_startingPt;
@@ -112,24 +124,21 @@ namespace MidiLearner
             testChordLabel.Enabled = true;
 
             m_chords.Add(testChordLabel, testChord);
+
         }
 
         private void Play_Click(object sender, EventArgs e)
         {
-            m_spawnTimer.Start();
-
-            PB_LIFE.Value = 100;
-            PB_LIFE.ForeColor = Color.Green;
-            LB_PASS_COUNT.Text= "0";
-            m_passCount = 0;
+            StartPlay();
         }
         private void TimerEventProcessor(Object myObject, EventArgs myEventArgs)
         {
             //chords
+            Random random = new Random();
             foreach (var label in m_chords.Keys.ToList())
             {
                 var tmp = label.Location;
-                tmp.X -= m_speed;
+                tmp.X -= m_speed>0? m_speed: random.Next(0,2);
                 label.Location = tmp;
 
                 if (label.Location.X <= m_endPt.X)
@@ -139,9 +148,9 @@ namespace MidiLearner
 
                     PB_LIFE.Value -= 10;
 
-                    if(PB_LIFE.Value <=0)
+                    if (PB_LIFE.Value <= 0)
                     {
-                        m_spawnTimer.Stop();
+                        StopPlay();
                     }
                     else if (PB_LIFE.Value <= 20)
                         PB_LIFE.ForeColor = Color.Red;
@@ -154,11 +163,11 @@ namespace MidiLearner
             var curChord = PianoManager.Instance.GetChord();
             foreach (var Keys in m_chords.Keys)
             {
-                if(curChord == m_chords[Keys])
+                if (curChord == m_chords[Keys])
                 {
                     m_chords.Remove(Keys);
                     m_passCount++;
-                    LB_PASS_COUNT.Text=Convert.ToString(m_passCount);
+                    LB_PASS_COUNT.Text = Convert.ToString(m_passCount);
                 }
             }
         }
@@ -169,41 +178,87 @@ namespace MidiLearner
 
         private void TB_CHORDSPEED_Scroll(object sender, EventArgs e)
         {
-            m_spawnTimer.Stop();
+            StopPlay();
 
             switch (TB_CHORDSPEED.Value)
             {
                 case 0:
-                    m_spawnTimer.Interval = 6000;
-                    m_speed = 1;
+                    m_spawnTimer.Interval = 7000;
+                    m_speed = 0;
                     break;
                 case 1:
+                    m_spawnTimer.Interval = 5000;
+                    m_speed = 0;
+                    break;
+                case 2:
                     m_spawnTimer.Interval = 4500;
                     m_speed = 1;
                     break;
-                case 2:
-                    m_spawnTimer.Interval = 5000;
-                    m_speed = 2;
-                    break;
-
                 case 3:
                     m_spawnTimer.Interval = 3500;
-                    m_speed = 2;
+                    m_speed = 1;
                     break;
                 case 4:
-                    m_speed = 3;
-                    m_spawnTimer.Interval = 3500;
+                    m_speed = 2;
+                    m_spawnTimer.Interval = 3000;
                     break;
                 case 5:
-                    m_speed = 3;
+                    m_speed = 2;
                     m_spawnTimer.Interval = 2000;
                     break;
 
                 case 6:
-                    m_speed = 4;
-                    m_spawnTimer.Interval = 1800;
+                    m_speed = 3;
+                    m_spawnTimer.Interval = 1500;
+                    break;
+                case 7:
+                    m_speed = 3;
+                    m_spawnTimer.Interval = 900;
                     break;
             }
+        }
+
+        private void BT_CHORD_ADD_Click(object sender, EventArgs e)
+        {
+            var newChord = Chord.FromString(TB_CHORD_ADD.Text);
+            if (newChord != null)
+                m_indiChords.Add(newChord.ToString());
+
+            TB_CHORD_ADD.Text = "";
+
+            StopPlay();
+        }
+
+        private void StartPlay()
+        {
+                m_spawnTimer.Start();
+
+                PB_LIFE.Value = 100;
+                PB_LIFE.ForeColor = Color.Green;
+                LB_PASS_COUNT.Text = "0";
+                m_passCount = 0;
+                m_isPlaying = true;
+        }
+        private void StopPlay()
+        {
+            m_spawnTimer.Stop();
+
+            foreach (var label in m_chords.Keys.ToList())
+            {
+                Controls.Remove(label);
+            }
+            m_chords.Clear();
+            m_isPlaying = false;
+        }
+
+        private void ChordCheck_SelectedValueChanged(object sender, EventArgs e)
+        {
+            StopPlay();
+        }
+
+        private void CB_SEVEN_CheckedChanged(object sender, EventArgs e)
+        {
+            StopPlay();
         }
     }
 }

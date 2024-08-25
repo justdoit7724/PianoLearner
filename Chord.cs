@@ -139,8 +139,93 @@ namespace MidiLearner
             return ret;
         }
 
+        public static Chord FromString(string sChord)
+        {
+            if (sChord.Length == 0)
+                return null;
+
+            int i = 0;
+            sChord = sChord.Replace(" ", "");
+
+
+            bool is7 = sChord.Last() == '7';
+            if (is7)
+                sChord = sChord.Remove(sChord.Length - 1);
+
+            NoteKind note; 
+            switch (sChord[i++])
+            {
+                case 'C':
+                    note = NoteKind.C;
+                    break;
+                case 'D':
+                    note = NoteKind.D;
+                    break;
+                case 'E':
+                    note = NoteKind.E;
+                    break;
+                case 'F':
+                    note = NoteKind.F;
+                    break;
+                case 'G':
+                    note = NoteKind.G;
+                    break;
+                case 'A':
+                    note = NoteKind.A;
+                    break;
+                case 'B':
+                    note = NoteKind.B;
+                    break;
+                default:
+                    return null;
+            }
+            if (i >= sChord.Length)
+                return new Chord(note, ChordKind.Major, is7, true);
+            switch (sChord[i])
+            {
+                case '#':
+
+                    if (note == NoteKind.B)
+                        note = NoteKind.C;
+                    else
+                        note = note + 1;
+                    i++;
+                    break;
+
+                case 'b':
+                    if (note == NoteKind.C)
+                        note = NoteKind.B;
+                    else
+                        note = note - 1;
+                    i++;
+                    break;
+
+            }
+            if (i >= sChord.Length)
+                return new Chord(note, ChordKind.Major, is7, is7);
+
+            switch(sChord[i++])
+            {
+                case 'M':
+                    return new Chord(note, ChordKind.Major, is7, false);
+                case 'm':
+                    return new Chord(note, ChordKind.Minor, is7, false);
+                case 'a':
+                    return new Chord(note, ChordKind.Aug, is7, false);
+                case 'd':
+                    return new Chord(note, ChordKind.Dim, is7, false);
+            }
+
+            return null;
+        }
+
         public static bool operator ==(Chord a, Chord b)
         {
+            if (object.Equals(a, null) && object.Equals(b, null))
+                return true;
+            if ((object.Equals(a,null) && !object.Equals(b, null)) || !object.Equals(a, null) && object.Equals(b,null))
+                return false;
+
             return a.m_chordKind==b.m_chordKind &&
                 a.m_note==b.m_note&&
                 a.m_is7 == b.m_is7 &&
@@ -148,6 +233,11 @@ namespace MidiLearner
         }
         public static bool operator !=(Chord a, Chord b)
         {
+            if (object.Equals(a, null) && object.Equals(b, null))
+                return false;
+            if ((object.Equals(a, null) && !object.Equals(b, null)) || !object.Equals(a, null) && object.Equals(b, null))
+                return true;
+
             return a.m_chordKind != b.m_chordKind ||
                 a.m_note != b.m_note ||
                 a.m_is7 != b.m_is7 ||
