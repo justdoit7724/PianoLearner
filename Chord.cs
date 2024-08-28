@@ -48,7 +48,7 @@ namespace MidiLearner
             m_isDominent7 = isDominent7;
         }
 
-        public override string ToString()
+        public override string ToString  ()
         {
             string ret="";
 
