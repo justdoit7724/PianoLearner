@@ -40,7 +40,7 @@ namespace MidiLearner
         private readonly bool m_is7;
         private readonly bool m_isDominent7;
 
-        public Chord(  NoteKind note, ChordKind chord, bool is7, bool isDominent7)
+        public Chord(NoteKind note, ChordKind chord, bool is7, bool isDominent7)
         {
             m_note = note;
             m_chordKind = chord;
